@@ -2,22 +2,23 @@
 //  TerminalFormattedString.swift
 //
 //  Created by Patrick Brown on 5/28/21.
-//  
+//
 //
 
 import Foundation
 
-/// `TerminalFormattedString` stores and formats a `String` for output on a tty, such as the MacOS Terminal app. Text color, background color,
-/// and text style are applied by dynamically appending ANSI escape codes to the raw string sent to the tty. For example, "Hello, world!" written in red text
-/// is sent to the tty raw as "\u{001B}[38;5;9mHello, world!\u{001B}[0m".
-public struct TerminalFormattedString: CustomStringConvertible, ExpressibleByStringLiteral, Equatable {
+/// Provides tty text formatting for text color, background color, and text style by
+/// dynamically appending ANSI escape codes to the original string. For example,
+/// "Hello, world!" formatted in red text is sent to the tty as "\u{001B}[38;5;9mHello, world!\u{001B}[0m".
+public struct TerminalFormattedString: CustomStringConvertible,
+                                       ExpressibleByStringLiteral,
+                                       Equatable {
     public var rawText: String = ""
     public var textColor: TerminalColor?
     public var textBackground: TerminalColor?
     public var textStyle: Set<TerminalTextStyle>?
     
-    /// Required  to conform to the `CustomStringConvertible` protocol.  `description` is used to provide the formatted
-    /// string that is sent to the tty for interpretation.
+    // Required  to conform to the `CustomStringConvertible` protocol.
     public var description: String {
         var formattedText = rawText
         
@@ -35,7 +36,6 @@ public struct TerminalFormattedString: CustomStringConvertible, ExpressibleByStr
             }
         }
         
-        // Add terminal clear escape sequence if formatted, otherwise returns rawText
         if textColor != nil || textBackground != nil || textStyle != nil {
             formattedText += "\u{001B}[0m"
         }
@@ -43,7 +43,11 @@ public struct TerminalFormattedString: CustomStringConvertible, ExpressibleByStr
         return formattedText
     }
     
-    public init(_ text: String, textColor: TerminalColor? = nil, textBackground: TerminalColor? = nil, textStyle: Set<TerminalTextStyle>? = nil) {
+    public init(_ text: String,
+                textColor: TerminalColor? = nil,
+                textBackground: TerminalColor? = nil,
+                textStyle: Set<TerminalTextStyle>? = nil)
+    {
         self.rawText = text
         self.textColor = textColor
         self.textBackground = textBackground
@@ -79,9 +83,11 @@ public struct TerminalFormattedString: CustomStringConvertible, ExpressibleByStr
         textStyle = nil
     }
     
-    /// Required to conform to the `Equatable` protocol. textStyle is a `Set`,  which returns `True` if both compared
-    /// contain the same elements, in any order.
-    public static func ==(lhs: TerminalFormattedString, rhs: TerminalFormattedString) -> Bool {
+    // Required to conform to the Equatable protocol. textStyle is a Set,
+    // so true is returned if both lhs and rhs contain the same elements, in any order.
+    public static func ==(lhs: TerminalFormattedString,
+                          rhs: TerminalFormattedString) -> Bool
+    {
         return
             lhs.rawText == rhs.rawText &&
             lhs.textBackground == rhs.textBackground &&
@@ -90,13 +96,13 @@ public struct TerminalFormattedString: CustomStringConvertible, ExpressibleByStr
     }
 }
 
-/// `TerminalColor` enum holds key data on ANSI escape commands for text and background colors.
+/// Holds numeric keys for ANSI escape commands for text and background colors.
 ///
-/// The escape squences are text strings interpreted by the Terminal app or other tty. They are structured as "\u{001B}[",
-/// the unicode for "ESC[", then the escape command number, and finally "m". An escape sequence indicating green text
-/// would be "\u{001B}[38;5;3m". "38;5" indicates that a text color is being specified, and the "3" indicates that the text color
-/// is green. The color names in `TerminalColor` were sourced from
-/// https://jonasjacek.github.io/colors/
+/// The escape squences are text strings interpreted by the Terminal app or other tty. They
+/// are structured as "\u{001B}[", the unicode for "ESC[", then the escape command number,
+/// and finally "m". An escape sequence indicating green text would be "\u{001B}[38;5;3m".
+/// "38;5" indicates that a text color is being specified, and the "3" indicates that the text color is green.
+/// The color names in `TerminalColor` were sourced from https://jonasjacek.github.io/colors/
 public enum TerminalColor: Int {
     case black = 0
     case maroon
@@ -356,11 +362,7 @@ public enum TerminalColor: Int {
     case grey93
 }
 
-/// `TerminalTextStyle` enum holds key data on ANSI escape commands for text style.
-///
-/// The escape squences are text strings interpreted by the Terminal app or other tty. They are structured
-/// as "\u{001B}[", the unicode for "ESC[", then the escape command number, and finally "m". An escape
-/// sequence indicating bold text would be "\u{001B}[1m".
+/// Holds numeric ANSI escape command keys for text style.
 public enum TerminalTextStyle: Int {
     case bold = 1
     case dim
@@ -371,4 +373,3 @@ public enum TerminalTextStyle: Int {
     case hidden
     case strikethrough
 }
-
