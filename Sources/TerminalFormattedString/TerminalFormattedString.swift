@@ -16,7 +16,7 @@ public struct TerminalFormattedString: CustomStringConvertible,
     public var rawText: String = ""
     public var textColor: TerminalColor?
     public var textBackground: TerminalColor?
-    public var textStyle: Set<TerminalTextStyle>?
+    public var textStyle: Set<TerminalTextStyle> = []
     
     // Required  to conform to the `CustomStringConvertible` protocol.
     public var description: String {
@@ -30,13 +30,11 @@ public struct TerminalFormattedString: CustomStringConvertible,
             formattedText = "\u{001B}[48;5;\(b.rawValue)m" + formattedText
         }
         
-        if let s = textStyle {
-            for style in s {
+        for style in textStyle {
                 formattedText = "\u{001B}[\(style.rawValue)m" + formattedText
-            }
         }
         
-        if textColor != nil || textBackground != nil || textStyle != nil {
+        if textColor != nil || textBackground != nil || !textStyle.isEmpty {
             formattedText += "\u{001B}[0m"
         }
         
@@ -46,7 +44,7 @@ public struct TerminalFormattedString: CustomStringConvertible,
     public init(_ text: String,
                 textColor: TerminalColor? = nil,
                 textBackground: TerminalColor? = nil,
-                textStyle: Set<TerminalTextStyle>? = nil)
+                textStyle: Set<TerminalTextStyle>)
     {
         self.rawText = text
         self.textColor = textColor
@@ -80,7 +78,7 @@ public struct TerminalFormattedString: CustomStringConvertible,
     public mutating func clearFormatting() {
         textColor = nil
         textBackground = nil
-        textStyle = nil
+        textStyle = Set<TerminalTextStyle>()
     }
     
     // Required to conform to the Equatable protocol. textStyle is a Set,
@@ -103,7 +101,7 @@ public struct TerminalFormattedString: CustomStringConvertible,
 /// and finally "m". An escape sequence indicating green text would be "\u{001B}[38;5;3m".
 /// "38;5" indicates that a text color is being specified, and the "3" indicates that the text color is green.
 /// The color names in `TerminalColor` were sourced from https://jonasjacek.github.io/colors/
-public enum TerminalColor: Int {
+public enum TerminalColor: Int, CaseIterable {
     case black = 0
     case maroon
     case green
@@ -363,7 +361,7 @@ public enum TerminalColor: Int {
 }
 
 /// Holds numeric ANSI escape command keys for text style.
-public enum TerminalTextStyle: Int {
+public enum TerminalTextStyle: Int, CaseIterable {
     case bold = 1
     case dim
     case italic
@@ -371,5 +369,5 @@ public enum TerminalTextStyle: Int {
     case blink
     case reverse
     case hidden
-    case strikethrough
+    case strikethrough  // often not supported
 }
