@@ -1,5 +1,7 @@
 # TerminalFormattedString
 
+<img src="https://img.shields.io/github/license/patrickdeanbrown/TerminalFormattedString?style=for-the-badge">
+
 ## Overview
 `TerminalFormattedString` provides a lightweight, readable, and portable way to format and store 
 formatted strings for output on a tty, such as the MacOS Terminal app. It uses ANSI escape sequences for applying
@@ -8,11 +10,11 @@ text color, background color, and text styles.
 Specifying text formatting is straigtforward and familiar to those setting color properties in IDEs such as XCode,
 and it should read like plain English.
 
-```
-    var formattedText = TerminalFormattedString("Hello, World!",
-                                                textColor: .red,
-                                                textBackground: .blue,
-                                                textStyle: [.bold, .italic])
+```swift
+var formattedText = TerminalFormattedString("Hello, World!",
+                                            textColor: .red,
+                                            textBackground: .blue,
+                                            textStyle: [.bold, .italic])
 ```
 
 
@@ -26,9 +28,11 @@ is a `Set` and can contain multiple options, in order allow combined text styles
 
 ## Usage Examples
 
-*Reusable Indicators*
+**Reusable Indicators**
+
 `TerminalFormattedString` is useful for formatted text that is formatted once and reused. It also can be combined with string literals using the + operator.
-```
+
+```swift
 var isJavascriptEnabled: Bool = false
 var isJSONLibraryInstalled: Bool = true
 var isServerConnected: Bool = true
@@ -48,5 +52,6 @@ print("[ " + (isJSONLibraryInstalled ? testPass : testFail) + " ]" + " JSON Libr
 print("[ " + (isServerConnected ? testPass : testFail) + " ]" + " Connected to Remote Server")
 
 ```
-![Pass Fail Output](Assets/pass_fail.png)
+<img src="Assets/pass_fail.png" width="300">
+
 
