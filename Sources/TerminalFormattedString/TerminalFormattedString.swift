@@ -41,16 +41,18 @@ public struct TerminalFormattedString: CustomStringConvertible,
         return formattedText
     }
     
+    
     public init(_ text: String,
                 textColor: TerminalColor? = nil,
                 textBackground: TerminalColor? = nil,
-                textStyle: Set<TerminalTextStyle>)
+                textStyle: Set<TerminalTextStyle> = [])
     {
         self.rawText = text
         self.textColor = textColor
         self.textBackground = textBackground
         self.textStyle = textStyle
     }
+    
     
     /// Required init function to conform to the `ExpressibleByStringLiteral` protocol
     ///
@@ -63,6 +65,7 @@ public struct TerminalFormattedString: CustomStringConvertible,
         self.rawText = text
     }
     
+    
     // Two + overloading functions were written so that TerminalFormattedString
     // would have the same behavior regardless of its position to strings in an
     // expression using +.
@@ -70,9 +73,11 @@ public struct TerminalFormattedString: CustomStringConvertible,
         return lhs.description + rhs
     }
     
+    
     public static func +(lhs: String, rhs: TerminalFormattedString) -> String {
         return lhs + rhs.description
     }
+    
     
     /// Removes all formatting from the `TerminalFormattedString` instance
     public mutating func clearFormatting() {
@@ -80,6 +85,7 @@ public struct TerminalFormattedString: CustomStringConvertible,
         textBackground = nil
         textStyle = Set<TerminalTextStyle>()
     }
+    
     
     // Required to conform to the Equatable protocol. textStyle is a Set,
     // so true is returned if both lhs and rhs contain the same elements, in any order.
