@@ -7,34 +7,34 @@
 
 import Foundation
 
-/// Provides tty text formatting for text color, background color, and text style by
-/// dynamically appending ANSI escape codes to the original string. For example,
+/// Provides tty text formatting with foreground color, background color, and style by
+/// dynamically appending ANSI escape codes to a raw string. For example,
 /// "Hello, world!" formatted in red text is sent to the tty as "\u{001B}[38;5;9mHello, world!\u{001B}[0m".
 public struct TerminalFormattedString: CustomStringConvertible,
                                        ExpressibleByStringLiteral,
                                        Equatable {
     public var rawText: String = ""
-    public var textColor: TerminalColor?
-    public var textBackground: TerminalColor?
-    public var textStyle: Set<TerminalTextStyle> = []
+    public var foregroundColor: TerminalColor?
+    public var backgroundColor: TerminalColor?
+    public var style: Set<TerminalTextStyle> = []
     
     // Required  to conform to the `CustomStringConvertible` protocol.
     public var description: String {
         var formattedText = rawText
         
-        if let c = textColor {
+        if let c = foregroundColor {
             formattedText = "\u{001B}[38;5;\(c.rawValue)m" + formattedText
         }
         
-        if let b = textBackground {
+        if let b = backgroundColor {
             formattedText = "\u{001B}[48;5;\(b.rawValue)m" + formattedText
         }
         
-        for style in textStyle {
-                formattedText = "\u{001B}[\(style.rawValue)m" + formattedText
+        for s in style {
+                formattedText = "\u{001B}[\(s.rawValue)m" + formattedText
         }
         
-        if textColor != nil || textBackground != nil || !textStyle.isEmpty {
+        if foregroundColor != nil || backgroundColor != nil || !style.isEmpty {
             formattedText += "\u{001B}[0m"
         }
         
@@ -43,19 +43,18 @@ public struct TerminalFormattedString: CustomStringConvertible,
     
     
     public init(_ text: String,
-                textColor: TerminalColor? = nil,
-                textBackground: TerminalColor? = nil,
-                textStyle: Set<TerminalTextStyle> = [])
+                foregroundColor: TerminalColor? = nil,
+                backgroundColor: TerminalColor? = nil,
+                style: Set<TerminalTextStyle> = [])
     {
         self.rawText = text
-        self.textColor = textColor
-        self.textBackground = textBackground
-        self.textStyle = textStyle
+        self.foregroundColor = foregroundColor
+        self.backgroundColor = backgroundColor
+        self.style = style
     }
     
     
     /// Required init function to conform to the `ExpressibleByStringLiteral` protocol
-    ///
     /// Allows the following initialization of a `TerminalFormattedString` instance
     /// ```
     /// let myFormattedString: TerminalFormattedString = "Hi, there!"
@@ -66,9 +65,8 @@ public struct TerminalFormattedString: CustomStringConvertible,
     }
     
     
-    // Two + overloading functions were written so that TerminalFormattedString
-    // would have the same behavior regardless of its position to strings in an
-    // expression using +.
+    // Two + overloading functions allow TerminalFormattedString to be the lhs
+    // or rhs operand in an expression using +.
     public static func +(lhs: TerminalFormattedString, rhs: String) -> String {
         return lhs.description + rhs
     }
@@ -79,34 +77,37 @@ public struct TerminalFormattedString: CustomStringConvertible,
     }
     
     
-    /// Removes all formatting from the `TerminalFormattedString` instance
+    /// Clears formatting from the `TerminalFormattedString` instance
     public mutating func clearFormatting() {
-        textColor = nil
-        textBackground = nil
-        textStyle = Set<TerminalTextStyle>()
+        foregroundColor = nil
+        backgroundColor = nil
+        style = Set<TerminalTextStyle>()
     }
     
     
-    // Required to conform to the Equatable protocol. textStyle is a Set,
-    // so true is returned if both lhs and rhs contain the same elements, in any order.
+    // Required to conform to the Equatable protocol. style is a Set,
+    // so true is returned if both lhs and rhs contain the same elements,
+    // regardless of their order.
     public static func ==(lhs: TerminalFormattedString,
                           rhs: TerminalFormattedString) -> Bool
     {
         return
             lhs.rawText == rhs.rawText &&
-            lhs.textBackground == rhs.textBackground &&
-            lhs.textColor == rhs.textColor &&
-            lhs.textStyle == rhs.textStyle
+            lhs.backgroundColor == rhs.backgroundColor &&
+            lhs.foregroundColor == rhs.foregroundColor &&
+            lhs.style == rhs.style
     }
 }
 
-/// Holds numeric keys for ANSI escape commands for text and background colors.
+/// Holds numeric keys for ANSI escape commands for foreground and background colors.
 ///
 /// The escape squences are text strings interpreted by the Terminal app or other tty. They
-/// are structured as "\u{001B}[", the unicode for "ESC[", then the escape command number,
-/// and finally "m". An escape sequence indicating green text would be "\u{001B}[38;5;3m".
-/// "38;5" indicates that a text color is being specified, and the "3" indicates that the text color is green.
-/// The color names in `TerminalColor` were sourced from https://jonasjacek.github.io/colors/
+/// are structured as:
+/// 1)  "\u{001B}[", the unicode for "ESC["
+/// 2) the escape sequence command number, e.g. "38;5;3", meaning foreground color 3 (olive)
+/// 3) "m"
+/// An escape sequence indicating olive text would be "\u{001B}[38;5;3m".
+/// Names in `TerminalColor` were sourced from https://jonasjacek.github.io/colors/
 public enum TerminalColor: Int, CaseIterable {
     case black = 0
     case maroon

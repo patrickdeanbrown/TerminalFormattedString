@@ -5,12 +5,12 @@ final class TerminalFormattedStringTests: XCTestCase {
     func testTerminalTextColorEnumForText() {
         var numericCaseRepresentation: Int = 0
         var formattedText = TerminalFormattedString("TEXT",
-                                                    textColor: nil,
-                                                    textBackground: nil,
-                                                    textStyle: [])
+                                                    foregroundColor: nil,
+                                                    backgroundColor: nil,
+                                                    style: [])
             
         for textColorCase in TerminalColor.allCases {
-            formattedText.textColor = textColorCase
+            formattedText.foregroundColor = textColorCase
             XCTAssertEqual(formattedText.description,
                            "\u{001B}[38;5;\(numericCaseRepresentation)mTEXT\u{001B}[0m",
                            "Text color failed at case: \(textColorCase.rawValue).")
@@ -22,12 +22,12 @@ final class TerminalFormattedStringTests: XCTestCase {
     func testTerminalColorEnumForBackground() {
         var numericCaseRepresentation: Int = 0
         var formattedText = TerminalFormattedString("TEXT",
-                                                    textColor: nil,
-                                                    textBackground: nil,
-                                                    textStyle: [])
+                                                    foregroundColor: nil,
+                                                    backgroundColor: nil,
+                                                    style: [])
             
         for backgroundColorCase in TerminalColor.allCases {
-            formattedText.textBackground = backgroundColorCase
+            formattedText.backgroundColor = backgroundColorCase
             XCTAssertEqual(formattedText.description,
                            "\u{001B}[48;5;\(numericCaseRepresentation)mTEXT\u{001B}[0m",
                            "Text background failed at case: \(backgroundColorCase.rawValue).")
@@ -46,18 +46,18 @@ final class TerminalFormattedStringTests: XCTestCase {
     // values in set.
     func testTerminalTextStyleEnum() {
         var formattedTextFirst = TerminalFormattedString("TEXT",
-                                                         textColor: nil,
-                                                         textBackground: nil,
-                                                         textStyle: [])
+                                                         foregroundColor: nil,
+                                                         backgroundColor: nil,
+                                                         style: [])
             
         var formattedTextSecond = TerminalFormattedString("TEXT",
-                                                          textColor: nil,
-                                                          textBackground: nil,
-                                                          textStyle: [])
+                                                          foregroundColor: nil,
+                                                          backgroundColor: nil,
+                                                          style: [])
             
         for style in TerminalTextStyle.allCases {
-            formattedTextFirst.textStyle.insert(style)
-            formattedTextSecond.textStyle.insert(style)
+            formattedTextFirst.style.insert(style)
+            formattedTextSecond.style.insert(style)
             XCTAssertEqual(formattedTextFirst, formattedTextSecond)
         }
     }
