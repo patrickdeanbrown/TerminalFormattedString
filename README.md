@@ -12,16 +12,16 @@ and it should read like plain English.
 
 ```swift
 var formattedText = TerminalFormattedString("Hello, World!",
-                                            textColor: .red,
-                                            textBackground: .blue,
-                                            textStyle: [.bold, .italic])
+                                            foregroundColor: .red,
+                                            backgroundColor: .blue,
+                                            style: [.bold, .italic])
 ```
 
 
 
 ANSI escape sequence data for Select Graphics Rendition (SGR) can be summarized as an integer, which make
-`textColor`, `textBackground`, and `textStyle`, easily expressed through integer enums. Enums also allow XCode 
-and other IDEs to provide a dropdown menu of options for `textColor`, `textBackground`, and `textStyle`. `textStyle`
+`foregroundColor`, `backgroundColor`, and `style`, easily expressed through integer enums. Enums also allow XCode 
+and other IDEs to provide a dropdown menu of options for `foregroundColor`, `backgroundColor`, and `style`. `style`
 is a `Set` and can contain multiple options, in order allow combined text styles such as bold and underlined text.
 
 (The enum implementation comes from [ColorizeSwift](https://github.com/mtynior/ColorizeSwift), which extends the `String` builtin and is worth checking out.)
@@ -38,14 +38,14 @@ var isJSONLibraryInstalled: Bool = true
 var isServerConnected: Bool = true
 
 var testPass = TerminalFormattedString("Pass",
-                                        textColor: .green,
-                                        textBackground: .black,
-                                        textStyle: [.bold])
+                                        foregroundColor: .green,
+                                        backgroundColor: .black,
+                                        style: [.bold])
 
 var testFail = TerminalFormattedString("Fail",
-                                       textColor: .red,
-                                       textBackground: .black,
-                                       textStyle: [.bold])
+                                       foregroundColor: .red,
+                                       backgroundColor: .black,
+                                       style: [.bold])
 
 print("[ " + (isJavascriptEnabled ? testPass : testFail) + " ]" + " JavaScript Enabled")
 print("[ " + (isJSONLibraryInstalled ? testPass : testFail) + " ]" + " JSON Library Installed")
