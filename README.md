@@ -22,7 +22,7 @@ var formattedText = TerminalFormattedString("Hello, World!",
 ANSI escape sequence data for Select Graphics Rendition (SGR) can be summarized as an integer, which make
 `foregroundColor`, `backgroundColor`, and `style`, easily expressed through integer enums. Enums also allow XCode 
 and other IDEs to provide a dropdown menu of options for `foregroundColor`, `backgroundColor`, and `style`. `style`
-is a `Set` and can contain multiple options, in order allow combined text styles such as bold and underlined text.
+is a `Set` and can contain multiple options, in order to allow combined text styles such as bold and underlined text.
 
 (The enum implementation comes from [ColorizeSwift](https://github.com/mtynior/ColorizeSwift), which extends the `String` builtin and is worth checking out.)
 
